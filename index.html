@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Asisten Jadwal - AI Assistant</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --success: #22c55e;
+      --danger-bg: #fef2f2;
+      --danger-border: #fecaca;
+      --success-bg: #f0fdf4;
+      --success-border: #bbf7d0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: var(--bg); color: var(--text); line-height: 1.6; padding: 20px 16px; max-width: 900px; margin: 0 auto; }
+    header, section, footer { margin-bottom: 32px; }
+    
+    /* Hero Section */
+    .hero { background: var(--card-bg); border: 1px solid var(--border); padding: 32px 24px; border-radius: 16px; text-align: center; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+    .avatar { width: 72px; height: 72px; background: #eff6ff; color: var(--primary); font-size: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%; margin: 0 auto 16px; border: 2px solid #bfdbfe; }
+    .badge { display: inline-flex; align-items: center; gap: 6px; background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; margin-bottom: 12px; }
+    .dot { width: 8px; height: 8px; background-color: var(--success); border-radius: 50%; box-shadow: 0 0 8px var(--success); }
+    h1 { font-size: 28px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .tagline { color: var(--text-muted); font-size: 16px; max-width: 600px; margin: 0 auto; }
+
+    /* Grid Layouts */
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+
+    /* Section Styling */
+    h2 { font-size: 20px; margin-bottom: 16px; text-align: center; color: var(--text); }
+    .card { background: var(--card-bg); border: 1px solid var(--border); padding: 20px; border-radius: 12px; }
+
+    /* Comparison Cards */
+    .card-chaos { background: var(--danger-bg); border-color: var(--danger-border); }
+    .card-solution { background: var(--success-bg); border-color: var(--success-border); }
+    .card h3 { font-size: 16px; margin-bottom: 12px; }
+    ul { list-style: none; }
+    ul li { margin-bottom: 8px; font-size: 14px; display: flex; gap: 8px; align-items: flex-start; }
+
+    /* Capabilities */
+    .cap-card { text-align: center; }
+    .cap-icon { font-size: 28px; margin-bottom: 8px; }
+    .cap-card h3 { font-size: 16px; margin-bottom: 4px; }
+    .cap-card p { font-size: 13px; color: var(--text-muted); }
+
+    /* Simulation Box */
+    .sim-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+    .sim-buttons { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; justify-content: center; }
+    .btn-sim { background: #f1f5f9; border: 1px solid #cbd5e1; color: var(--text); padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+    .btn-sim:hover { background: #e2e8f0; }
+    .chat-window { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; min-height: 160px; display: flex; flex-direction: column; gap: 12px; }
+    .chat-msg { padding: 10px 14px; border-radius: 10px; font-size: 14px; max-width: 85%; line-height: 1.4; }
+    .msg-user { background: var(--primary); color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
+    .msg-agent { background: white; border: 1px solid var(--border); color: var(--text); align-self: flex-start; border-bottom-left-radius: 2px; }
+    .typing { font-style: italic; color: var(--text-muted); font-size: 13px; }
+
+    /* CTA & Footer */
+    .cta-container { text-align: center; background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 32px 20px; }
+    .btn-cta { display: inline-block; background: var(--primary); color: white; text-decoration: none; padding: 12px 28px; border-radius: 8px; font-weight: 600; font-size: 15px; transition: background 0.2s; margin-top: 12px; }
+    .btn-cta:hover { background: var(--primary-hover); }
+    footer { text-align: center; font-size: 12px; color: var(--text-muted); border-top: 1px solid var(--border); padding-top: 16px; }
+  </style>
+</head>
+<body>
+
+  <!-- 1. Hero Section -->
+  <header class="hero">
+    <div class="avatar">📅</div>
+    <div class="badge"><span class="dot"></span> Status: Active & Ready 24/7</div>
+    <h1>Asisten Jadwal</h1>
+    <p class="tagline">Menjadwalkan acara atau undangan serta mengingatkan agenda acara Anda secara otomatis.</p>
+  </header>
+
+  <!-- 2. Problem & Solution Card -->
+  <section>
+    <h2>Masalah & Solusi</h2>
+    <div class="grid-2">
+      <div class="card card-chaos">
+        <h3>❌ Tanpa Asisten (The Chaos)</h3>
+        <ul>
+          <li>❌ Sering lupa ada acara penting yang akan datang.</li>
+          <li>❌ Tidak sempat mencatat jadwal ke Google Calendar secara manual.</li>
+          <li>❌ Dokumen undangan berserakan dan tidak terarsip dengan baik.</li>
+        </ul>
+      </div>
+      <div class="card card-solution">
+        <h3>✅ Dengan Asisten Jadwal (The Solution)</h3>
+        <ul>
+          <li>✅ Pengingat otomatis untuk agenda dan tugas harian.</li>
+          <li>✅ Penjadwalan instan langsung tersinkron ke Google Calendar.</li>
+          <li>✅ Penyimpanan otomatis dokumen undangan ke Google Drive untuk arsip.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Core Capabilities -->
+  <section>
+    <h2>Fitur Utama & Integrasi</h2>
+    <div class="grid-3">
+      <div class="card cap-card">
+        <div class="cap-icon">📆</div>
+        <h3>Google Calendar Integration</h3>
+        <p>Otomatis membuat jadwal acara, mengatur waktu, dan mengirimkan pengingat harian tepat waktu.</p>
+      </div>
+      <div class="card cap-card">
+        <div class="cap-icon">📁</div>
+        <h3>Google Drive Archiving</h3>
+        <p>Menyimpan dan merapikan seluruh file dokumen atau surat undangan secara terorganisir.</p>
+      </div>
+      <div class="card cap-card">
+        <div class="cap-icon">👤</div>
+        <h3>Human-in-the-Loop</h3>
+        <p>Meminta konfirmasi Anda terlebih dahulu sebelum memfinalisasi acara atau menyimpan dokumen penting.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Interactive Simulation -->
+  <section>
+    <h2>Simulasi Penggunaan Interaktif</h2>
+    <div class="sim-box">
+      <div class="sim-buttons">
+        <button class="btn-sim" onclick="runSim(1)">1. Catat Undangan</button>
+        <button class="btn-sim" onclick="runSim(2)">2. Pengingat Harian</button>
+        <button class="btn-sim" onclick="runSim(3)">3. Arsip Dokumen</button>
+      </div>
+      <div class="chat-window" id="chatWindow">
+        <div class="chat-msg msg-agent">Halo! Pilih skenario di atas untuk melihat bagaimana saya dapat membantu Anda.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Footer & CTA -->
+  <section class="cta-container">
+    <h2>Mulai Kelola Jadwal Anda Tanpa Ribet</h2>
+    <p style="color: var(--text-muted); font-size: 14px;">Hubungi saya untuk mulai memanfaatkan Asisten Jadwal hari ini.</p>
+    <a href="https://wa.me/628995047773" target="_blank" class="btn-cta">💬 Hubungi via WhatsApp</a>
+  </section>
+
+  <footer>
+    <p>Built with AI · AI Builder Bootcamp Showcase</p>
+  </footer>
+
+  <script>
+    const scenarios = {
+      1: {
+        user: "Tolong jadwalkan rapat webinar besok jam 10 pagi dari dokumen undangan ini.",
+        agent: "Siap! Undangan telah diproses. Acara 'Rapat Webinar' telah ditambahkan ke Google Calendar Anda untuk besok pukul 10:00 WIB. 📅"
+      },
+      2: {
+        user: "Apa saja agenda dan tugas harian saya untuk hari ini?",
+        agent: "Berikut agenda Anda hari ini:\n1. 09:00 - Standup Meeting\n2. 14:00 - Review Dokumen\nPengingat telah disinkronkan ke Google Calendar Anda! 🔔"
+      },
+      3: {
+        user: "Simpan berkas undangan PDF ini ke folder arsip.",
+        agent: "Dokumen undangan berhasil diunggah dan dirapikan di Google Drive pada folder 'Arsip Undangan 2026'. 📁"
+      }
+    };
+
+    function runSim(id) {
+      const windowEl = document.getElementById('chatWindow');
+      const data = scenarios[id];
+      windowEl.innerHTML = `<div class="chat-msg msg-user">${data.user}</div><div class="typing" id="typing">Asisten Jadwal sedang mengetik...</div>`;
+      setTimeout(() => {
+        const typingEl = document.getElementById('typing');
+        if (typingEl) typingEl.remove();
+        windowEl.innerHTML += `<div class="chat-msg msg-agent">${data.agent.replace(/\n/g, '<br>')}</div>`;
+        windowEl.scrollTop = windowEl.scrollHeight;
+      }, 1000);
+    }
+  </script>
+</body>
+</html>
